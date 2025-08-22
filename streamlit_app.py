@@ -8,7 +8,7 @@ import pandas as pd
 from datetime import datetime
 import numpy as np
 from io import BytesIO
-# from util import email
+from util import send_mail
 import os
 
 
@@ -125,7 +125,6 @@ def log_play_to_set(play):
     expanded_play = (
         play_result,
         sign,
-        datetime.now(),
         set_info["our_score"],
         set_info["opp_score"]
     )
@@ -139,7 +138,7 @@ def export_to_excel():
     with pd.ExcelWriter(filename, engine='openpyxl') as writer:
         # add each set to excel
         for i, set_data in enumerate(st.session_state.sets):
-            df = pd.DataFrame(set_data, columns=["Play Result", "Triangle +/-", "Timestamp", "UConn", st.session_state.opp])
+            df = pd.DataFrame(set_data, columns=["Play Result", "Triangle +/-", "UConn", st.session_state.opp])
             df.to_excel(writer, sheet_name=f"Set {i+1} Log")
 
         # add better set information (blks, ae)
@@ -156,7 +155,7 @@ def export_to_excel():
 
 def send_excel_emails(file):
     try:
-        email.send_mail(send_from='owen.babiec@uconn.edu',
+        send_mail(send_from='owen.babiec@uconn.edu',
                         send_to=['owen.babiec@uconn.edu'],
                         subject=f"UConn vs {st.session_state.opp} - {datetime.today().strftime('%Y-%m-%d')} Triangle Stats",
                         text=f"Here's the excel files for this game",
@@ -170,7 +169,7 @@ def display_data():
     current_set = st.session_state.set
     st.subheader(f"Set {current_set} Play Log")
     set_data = st.session_state.sets[current_set]
-    df = pd.DataFrame(set_data, columns=["Play Result", "+/-", "Timestamp", "UConn", st.session_state.opp])
+    df = pd.DataFrame(set_data, columns=["Play Result", "+/-", "UConn", st.session_state.opp])
     st.dataframe(df)
 
 
