@@ -212,6 +212,7 @@ def display_triangle_stats(triangle_stats, overall_stats):
     st.dataframe(overall_df)
 
 def triangle_by_set():
+    st.subheader("Triangle Stats")
     triangle_stats = []
     for set_num in range(1, 6):
         stats = st.session_state.set_data[set_num]["stats"]
@@ -226,7 +227,7 @@ def triangle_by_set():
         })
 
     overall_total = {
-        "Set #" : "Overall Game",
+        "Set #" : "Game",
         "Terminal Serve": sum(row["Terminal Serve"] for row in triangle_stats),
         "First Ball": sum(row["First Ball"] for row in triangle_stats),
         "Transition": sum(row["Transition"] for row in triangle_stats)
@@ -313,8 +314,8 @@ with col4:
 
 # Displays set log, triangle per set and overall game triangle
 display_data()
-curr_triangle, ovr_triangle = calculate_triangle_stats()
-display_triangle_stats(curr_triangle, ovr_triangle)
+# curr_triangle, ovr_triangle = calculate_triangle_stats()
+# display_triangle_stats(curr_triangle, ovr_triangle)
 
 triangle_by_sets = triangle_by_set()
 st.dataframe(triangle_by_sets)
