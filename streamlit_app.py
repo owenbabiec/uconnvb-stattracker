@@ -32,13 +32,20 @@ def initiate_session():
                 "opp_score": 0,
                 "stats": {
                     "our_ts_ace": 0, "our_ts_err": 0, "opp_ts_ace": 0, "opp_ts_err": 0,
+
                     "our_fb_kills": 0, "our_fb_stop": 0, "opp_fb_kills": 0, "opp_fb_stop": 0,
-                    "our_fb_blks": 0, "our_fb_ae": 0, "opp_fb_blks": 0, "opp_fb_ae": 0,
+                    "our_fb_stuff": 0, "opp_fb_he": 0, "opp_fb_err": 0,
+                    "opp_fb_stuff": 0, "our_fb_he": 0, "our_fb_err": 0,
+                    # "our_fb_blks": 0, "our_fb_ae": 0, "opp_fb_blks": 0, "opp_fb_ae": 0,
+
                     "our_trs_kills": 0, "our_trs_stop": 0, "opp_trs_kills": 0, "opp_trs_stop": 0,
-                    "our_trs_blks": 0, "our_trs_ae": 0, "opp_trs_blks": 0, "opp_trs_ae": 0
+                    "our_trs_stuff": 0, "opp_trs_he": 0, "opp_trs_err": 0,
+                    "opp_trs_stuff": 0, "our_trs_he": 0, "our_trs_err": 0
+                    # "our_trs_blks": 0, "our_trs_ae": 0, "opp_trs_blks": 0, "opp_trs_ae": 0
                 }
             } for i in range(1, 6)
         }
+
 
 
 def undo_previous_play():
@@ -60,22 +67,30 @@ def undo_previous_play():
             set_info["opp_score"] -= 1
 
         stat_map = {
-            "UConn Serve Ace": ["our_ts_ace"],
-            "UConn Serve Error": ["our_ts_err"],
-            f"{st.session_state.opp} Serve Ace": ["opp_ts_ace"],
-            f"{st.session_state.opp} Serve Error": ["opp_ts_err"],
-            "UConn First Ball Kills": ["our_fb_kills"],
-            f"UConn Stops {st.session_state.opp} First Ball - Blocked": ["our_fb_stop", "our_fb_blks"],
-            f"UConn Stops {st.session_state.opp} First Ball - Out of Bounds": ["our_fb_stop", "our_fb_ae"],
-            f"{st.session_state.opp} First Ball Kills": ["opp_fb_kills"],
-            f"{st.session_state.opp} Stops UConn First Ball - Blocked": ["opp_fb_stop", "opp_fb_blks"],
-            f"{st.session_state.opp} Stops UConn First Ball - Out of Bounds": ["opp_fb_stop", "opp_fb_ae"],
-            "UConn Transition Kills": ["our_trs_kills"],
-            f"UConn Stops {st.session_state.opp} Transition - Blocked": ["our_trs_stop", "our_trs_blks"],
-            f"UConn Stops {st.session_state.opp} Transition - Out of Bounds": ["our_trs_stop", "our_trs_ae"],
-            f"{st.session_state.opp} Transition Kills": ["opp_trs_kills"],
-            f"{st.session_state.opp} Stops UConn Transition - Blocked": ["opp_trs_stop", "opp_trs_blks"],
-            f"{st.session_state.opp} Stops UConn Transition - Out of Bounds": ["opp_trs_stop", "opp_trs_ae"]
+            "UConn Ace": ["our_ts_ace"],
+            "UConn SE": ["our_ts_err"],
+            f"{st.session_state.opp} Ace": ["opp_ts_ace"],
+            f"{st.session_state.opp} SE": ["opp_ts_err"],
+
+            "UConn FB Kill": ["our_fb_kills"],
+            "UConn Stuff Block FB": ["our_fb_stop", "our_fb_stuff"],
+            f"{st.session_state.opp} Hitting Error FB": ["our_fb_stop", "opp_fb_he"],
+            f"{st.session_state.opp} Error FB (BHE, Net etc.)": ["our_fb_stop", "opp_fb_err"],
+
+            f"{st.session_state.opp} FB Kill": ["opp_fb_kills"],
+            f"{st.session_state.opp} Stuff Block FB": ["opp_fb_stop", "opp_fb_stuff"],
+            "UConn Hitting Error FB": ["opp_fb_stop", "our_fb_he"],
+            "UConn Error FB (BHE, Net etc.)": ["opp_fb_stop", "our_fb_err"],
+
+            "UConn TR Kill": ["our_trs_kills"],
+            "UConn Stuff Block TR": ["our_trs_stop", "our_trs_stuff"],
+            f"{st.session_state.opp} Hitting Error TR": ["our_trs_stop", "opp_trs_he"],
+            f"{st.session_state.opp} Error TR (BHE, Net etc.)": ["our_trs_stop", "opp_trs_err"],
+
+            f"{st.session_state.opp} TR Kill": ["opp_trs_kills"],
+            f"{st.session_state.opp} Stuff Block TR": ["opp_trs_stop", "opp_trs_stuff"],
+            "UConn Hitting Error TR": ["opp_trs_stop", "our_trs_he"],
+            "UConn Error TR (BHE, Net etc.)": ["opp_trs_stop", "our_trs_err"]
         }
 
         if play_result in stat_map:
@@ -95,23 +110,31 @@ def log_play_to_set(play):
     sign = play[1]
 
     stat_map = {
-        "UConn Serve Ace": ["our_ts_ace"],
-        "UConn Serve Error": ["our_ts_err"],
-        f"{st.session_state.opp} Serve Ace": ["opp_ts_ace"],
-        f"{st.session_state.opp} Serve Error": ["opp_ts_err"],
-        "UConn First Ball Kills": ["our_fb_kills"],
-        f"UConn Stops {st.session_state.opp} First Ball - Blocked": ["our_fb_stop", "our_fb_blks"],
-        f"UConn Stops {st.session_state.opp} First Ball - Out of Bounds": ["our_fb_stop", "our_fb_ae"],
-        f"{st.session_state.opp} First Ball Kills": ["opp_fb_kills"],
-        f"{st.session_state.opp} Stops UConn First Ball - Blocked": ["opp_fb_stop", "opp_fb_blks"],
-        f"{st.session_state.opp} Stops UConn First Ball - Out of Bounds": ["opp_fb_stop", "opp_fb_ae"],
-        "UConn Transition Kills": ["our_trs_kills"],
-        f"UConn Stops {st.session_state.opp} Transition - Blocked": ["our_trs_stop", "our_trs_blks"],
-        f"UConn Stops {st.session_state.opp} Transition - Out of Bounds": ["our_trs_stop", "our_trs_ae"],
-        f"{st.session_state.opp} Transition Kills": ["opp_trs_kills"],
-        f"{st.session_state.opp} Stops UConn Transition - Blocked": ["opp_trs_stop", "opp_trs_blks"],
-        f"{st.session_state.opp} Stops UConn Transition - Out of Bounds": ["opp_trs_stop", "opp_trs_ae"]
-    }
+            "UConn Ace": ["our_ts_ace"],
+            "UConn SE": ["our_ts_err"],
+            f"{st.session_state.opp} Ace": ["opp_ts_ace"],
+            f"{st.session_state.opp} SE": ["opp_ts_err"],
+
+            "UConn FB Kill": ["our_fb_kills"],
+            "UConn Stuff Block FB": ["our_fb_stop", "our_fb_stuff"],
+            f"{st.session_state.opp} Hitting Error FB": ["our_fb_stop", "opp_fb_he"],
+            f"{st.session_state.opp} Error FB (BHE, Net etc.)": ["our_fb_stop", "opp_fb_err"],
+
+            f"{st.session_state.opp} FB Kill": ["opp_fb_kills"],
+            f"{st.session_state.opp} Stuff Block FB": ["opp_fb_stop", "opp_fb_stuff"],
+            "UConn Hitting Error FB": ["opp_fb_stop", "our_fb_he"],
+            "UConn Error FB (BHE, Net etc.)": ["opp_fb_stop", "our_fb_err"],
+
+            "UConn TR Kill": ["our_trs_kills"],
+            "UConn Stuff Block TR": ["our_trs_stop", "our_trs_stuff"],
+            f"{st.session_state.opp} Hitting Error TR": ["our_trs_stop", "opp_trs_he"],
+            f"{st.session_state.opp} Error TR (BHE, Net etc.)": ["our_trs_stop", "opp_trs_err"],
+
+            f"{st.session_state.opp} TR Kill": ["opp_trs_kills"],
+            f"{st.session_state.opp} Stuff Block TR": ["opp_trs_stop", "opp_trs_stuff"],
+            "UConn Hitting Error TR": ["opp_trs_stop", "our_trs_he"],
+            "UConn Error TR (BHE, Net etc.)": ["opp_trs_stop", "our_trs_err"]
+        }
 
     if play_result in stat_map:
         for stat in stat_map[play_result]:
@@ -238,6 +261,148 @@ def triangle_by_set():
     return pd.DataFrame(triangle_stats)
 
 
+
+def triangle_percentage_by_set():
+    st.subheader("Triangle Percentages")
+    triangle_stats = []
+
+    for set_num in range(1, 6):
+        stats = st.session_state.set_data[set_num]["stats"]
+
+        # Calculate Serve %, FB %, TRS % for this set
+        serve_total = (stats["our_ts_ace"] + stats["our_ts_err"] +
+                       stats["opp_ts_ace"] + stats["opp_ts_err"])
+        serve_pct = ((stats["our_ts_ace"] + stats["opp_ts_err"]) / serve_total * 100
+                     if serve_total > 0 else 0)
+
+        fb_total = (stats["our_fb_kills"] + stats["our_fb_stop"] +
+                    stats["opp_fb_kills"] + stats["opp_fb_stop"])
+        fb_pct = ((stats["our_fb_kills"] + stats["our_fb_stop"]) / fb_total * 100
+                  if fb_total > 0 else 0)
+
+        trs_total = (stats["our_trs_kills"] + stats["our_trs_stop"] +
+                     stats["opp_trs_kills"] + stats["opp_trs_stop"])
+        trs_pct = ((stats["our_trs_kills"] + stats["our_trs_stop"]) / trs_total * 100
+                   if trs_total > 0 else 0)
+
+        triangle_stats.append({
+            "Set #": set_num,
+            "Serve %": round(serve_pct, 1),
+            "FB %": round(fb_pct, 1),
+            "TRS %": round(trs_pct, 1)
+        })
+
+    # Calculate Overall Totals
+    overall_our_ts_ace = sum(st.session_state.set_data[s]["stats"]["our_ts_ace"] for s in range(1, 6))
+    overall_our_ts_err = sum(st.session_state.set_data[s]["stats"]["our_ts_err"] for s in range(1, 6))
+    overall_opp_ts_ace = sum(st.session_state.set_data[s]["stats"]["opp_ts_ace"] for s in range(1, 6))
+    overall_opp_ts_err = sum(st.session_state.set_data[s]["stats"]["opp_ts_err"] for s in range(1, 6))
+
+    overall_our_fb_kills = sum(st.session_state.set_data[s]["stats"]["our_fb_kills"] for s in range(1, 6))
+    overall_our_fb_stop = sum(st.session_state.set_data[s]["stats"]["our_fb_stop"] for s in range(1, 6))
+    overall_opp_fb_kills = sum(st.session_state.set_data[s]["stats"]["opp_fb_kills"] for s in range(1, 6))
+    overall_opp_fb_stop = sum(st.session_state.set_data[s]["stats"]["opp_fb_stop"] for s in range(1, 6))
+
+    overall_our_trs_kills = sum(st.session_state.set_data[s]["stats"]["our_trs_kills"] for s in range(1, 6))
+    overall_our_trs_stop = sum(st.session_state.set_data[s]["stats"]["our_trs_stop"] for s in range(1, 6))
+    overall_opp_trs_kills = sum(st.session_state.set_data[s]["stats"]["opp_trs_kills"] for s in range(1, 6))
+    overall_opp_trs_stop = sum(st.session_state.set_data[s]["stats"]["opp_trs_stop"] for s in range(1, 6))
+
+    # Overall percentages
+    overall_serve_total = overall_our_ts_ace + overall_our_ts_err + overall_opp_ts_ace + overall_opp_ts_err
+    overall_fb_total = overall_our_fb_kills + overall_our_fb_stop + overall_opp_fb_kills + overall_opp_fb_stop
+    overall_trs_total = overall_our_trs_kills + overall_our_trs_stop + overall_opp_trs_kills + overall_opp_trs_stop
+
+    overall_serve_pct = ((overall_our_ts_ace + overall_opp_ts_err) / overall_serve_total * 100
+                         if overall_serve_total > 0 else 0)
+    overall_fb_pct = ((overall_our_fb_kills + overall_our_fb_stop) / overall_fb_total * 100
+                      if overall_fb_total > 0 else 0)
+    overall_trs_pct = ((overall_our_trs_kills + overall_our_trs_stop) / overall_trs_total * 100
+                       if overall_trs_total > 0 else 0)
+
+    overall_total = {
+        "Set #": "Game",
+        "Serve %": round(overall_serve_pct, 1),
+        "FB %": round(overall_fb_pct, 1),
+        "TRS %": round(overall_trs_pct, 1)
+    }
+
+    triangle_stats.append(overall_total)
+
+    return pd.DataFrame(triangle_stats)
+
+def triangle_percentage_by_set():
+    st.subheader("Triangle Percentages")
+    triangle_stats = []
+
+    for set_num in range(1, 6):
+        stats = st.session_state.set_data[set_num]["stats"]
+
+        # Calculate Serve %, FB %, TRS % for this set
+        serve_total = (stats["our_ts_ace"] + stats["our_ts_err"] +
+                       stats["opp_ts_ace"] + stats["opp_ts_err"])
+        serve_pct = ((stats["our_ts_ace"] + stats["opp_ts_err"]) / serve_total * 100
+                     if serve_total > 0 else 0)
+
+        fb_total = (stats["our_fb_kills"] + stats["our_fb_stop"] +
+                    stats["opp_fb_kills"] + stats["opp_fb_stop"])
+        fb_pct = ((stats["our_fb_kills"] + stats["our_fb_stop"]) / fb_total * 100
+                  if fb_total > 0 else 0)
+
+        trs_total = (stats["our_trs_kills"] + stats["our_trs_stop"] +
+                     stats["opp_trs_kills"] + stats["opp_trs_stop"])
+        trs_pct = ((stats["our_trs_kills"] + stats["our_trs_stop"]) / trs_total * 100
+                   if trs_total > 0 else 0)
+
+        triangle_stats.append({
+            "Set #": set_num,
+            "Serve %": round(serve_pct, 1),
+            "FB %": round(fb_pct, 1),
+            "TRS %": round(trs_pct, 1)
+        })
+
+    # Calculate Overall Totals
+    overall_our_ts_ace = sum(st.session_state.set_data[s]["stats"]["our_ts_ace"] for s in range(1, 6))
+    overall_our_ts_err = sum(st.session_state.set_data[s]["stats"]["our_ts_err"] for s in range(1, 6))
+    overall_opp_ts_ace = sum(st.session_state.set_data[s]["stats"]["opp_ts_ace"] for s in range(1, 6))
+    overall_opp_ts_err = sum(st.session_state.set_data[s]["stats"]["opp_ts_err"] for s in range(1, 6))
+
+    overall_our_fb_kills = sum(st.session_state.set_data[s]["stats"]["our_fb_kills"] for s in range(1, 6))
+    overall_our_fb_stop = sum(st.session_state.set_data[s]["stats"]["our_fb_stop"] for s in range(1, 6))
+    overall_opp_fb_kills = sum(st.session_state.set_data[s]["stats"]["opp_fb_kills"] for s in range(1, 6))
+    overall_opp_fb_stop = sum(st.session_state.set_data[s]["stats"]["opp_fb_stop"] for s in range(1, 6))
+
+    overall_our_trs_kills = sum(st.session_state.set_data[s]["stats"]["our_trs_kills"] for s in range(1, 6))
+    overall_our_trs_stop = sum(st.session_state.set_data[s]["stats"]["our_trs_stop"] for s in range(1, 6))
+    overall_opp_trs_kills = sum(st.session_state.set_data[s]["stats"]["opp_trs_kills"] for s in range(1, 6))
+    overall_opp_trs_stop = sum(st.session_state.set_data[s]["stats"]["opp_trs_stop"] for s in range(1, 6))
+
+    # Overall percentages
+    overall_serve_total = overall_our_ts_ace + overall_our_ts_err + overall_opp_ts_ace + overall_opp_ts_err
+    overall_fb_total = overall_our_fb_kills + overall_our_fb_stop + overall_opp_fb_kills + overall_opp_fb_stop
+    overall_trs_total = overall_our_trs_kills + overall_our_trs_stop + overall_opp_trs_kills + overall_opp_trs_stop
+
+    overall_serve_pct = ((overall_our_ts_ace + overall_opp_ts_err) / overall_serve_total * 100
+                         if overall_serve_total > 0 else 0)
+    overall_fb_pct = ((overall_our_fb_kills + overall_our_fb_stop) / overall_fb_total * 100
+                      if overall_fb_total > 0 else 0)
+    overall_trs_pct = ((overall_our_trs_kills + overall_our_trs_stop) / overall_trs_total * 100
+                       if overall_trs_total > 0 else 0)
+
+    overall_total = {
+        "Set #": "Game",
+        "Serve %": round(overall_serve_pct, 1),
+        "FB %": round(overall_fb_pct, 1),
+        "TRS %": round(overall_trs_pct, 1)
+    }
+
+    triangle_stats.append(overall_total)
+
+    return pd.DataFrame(triangle_stats)
+
+    
+
+
 # Password prompt
 # if not st.session_state.authenticated:
 #     st.title("Volleyball Stat Tracker")
@@ -263,44 +428,55 @@ col1, col2, col3, col4 = st.columns(4)
 
 with col1:
     st.subheader("Terminal Serve")
-    if st.button("UConn Serve Ace"):
-        log_play_to_set(("UConn Serve Ace", "+"))
-    if st.button("UConn Serve Error"):
-        log_play_to_set(("UConn Serve Error", "-"))
-    if st.button(f"{st.session_state.opp} Serve Ace"):
-        log_play_to_set((f"{st.session_state.opp} Serve Ace", "-"))
-    if st.button(f"{st.session_state.opp} Serve Error"):
-        log_play_to_set((f"{st.session_state.opp} Serve Error", "+"))
+    if st.button("UConn Ace"):
+        log_play_to_set(("UConn Ace", "+"))
+    if st.button("UConn SE"):
+        log_play_to_set(("UConn SE", "-"))
+    if st.button(f"{st.session_state.opp} Ace"):
+        log_play_to_set((f"{st.session_state.opp} Ace", "-"))
+    if st.button(f"{st.session_state.opp} SE"):
+        log_play_to_set((f"{st.session_state.opp} SE", "+"))
 
 with col2:
     st.subheader("First Ball")
-    if st.button("UConn First Ball Kills"):
-        log_play_to_set(("UConn First Ball Kills", "+"))
-    if st.button(f"UConn Stops {st.session_state.opp} First Ball - Blocked"):
-        log_play_to_set((f"UConn Stops {st.session_state.opp} First Ball - Blocked", "+"))
-    if st.button(f"UConn Stops {st.session_state.opp} First Ball - Out of Bounds"):
-        log_play_to_set((f"UConn Stops {st.session_state.opp} First Ball - Out of Bounds", "+"))
-    if st.button(f"{st.session_state.opp} First Ball Kills"):
-        log_play_to_set((f"{st.session_state.opp} First Ball Kills", "-"))
-    if st.button(f"{st.session_state.opp} Stops UConn First Ball - Blocked"):
-        log_play_to_set((f"{st.session_state.opp} Stops UConn First Ball - Blocked", "-"))
-    if st.button(f"{st.session_state.opp} Stops UConn First Ball - Out of Bounds"):
-        log_play_to_set((f"{st.session_state.opp} Stops UConn First Ball - Out of Bounds", "-"))
+    if st.button("UConn FB Kill"):
+        log_play_to_set(("UConn FB Kill", "+"))
+    if st.button("UConn Stuff Block FB"):
+        log_play_to_set(("UConn Stuff Block FB", "+"))
+    if st.button(f"{st.session_state.opp} Hitting Error FB"):
+        log_play_to_set((f"{st.session_state.opp} Hitting Error FB", "+"))
+    if st.button(f"{st.session_state.opp} Error FB (BHE, Net etc.)"):
+        log_play_to_set((f"{st.session_state.opp} Error FB (BHE, Net etc.)", "+"))
+    
+    if st.button(f"{st.session_state.opp} FB Kill"):
+        log_play_to_set((f"{st.session_state.opp} FB Kill", "-"))
+    if st.button(f"{st.session_state.opp} Stuff Block FB"):
+        log_play_to_set((f"{st.session_state.opp} Stuff Block FB", "-"))
+    if st.button("UConn Hitting Error FB"):
+        log_play_to_set(("UConn Hitting Error FB", "-"))
+    if st.button("UConn Error FB (BHE, Net etc.)"):
+        log_play_to_set(("UConn Error FB (BHE, Net etc.)", "-"))
 
 with col3:
     st.subheader("Transition")
-    if st.button("UConn Transition Kills"):
-        log_play_to_set(("UConn Transition Kills", "+"))
-    if st.button(f"UConn Stops {st.session_state.opp} Transition - Blocked"):
-        log_play_to_set((f"UConn Stops {st.session_state.opp} Transition - Blocked", "+"))
-    if st.button(f"UConn Stops {st.session_state.opp} Transition - Out of Bounds"):
-        log_play_to_set((f"UConn Stops {st.session_state.opp} Transition - Out of Bounds", "+"))
-    if st.button(f"{st.session_state.opp} Transition Kills"):
-        log_play_to_set((f"{st.session_state.opp} Transition Kills", "-"))
-    if st.button(f"{st.session_state.opp} Stops UConn Transition - Blocked"):
-        log_play_to_set((f"{st.session_state.opp} Stops UConn Transition - Blocked", "-"))
-    if st.button(f"{st.session_state.opp} Stops UConn Transition - Out of Bounds"):
-        log_play_to_set((f"{st.session_state.opp} Stops UConn Transition - Out of Bounds", "-"))
+    if st.button("UConn TR Kill"):
+        log_play_to_set(("UConn TR Kill", "+"))
+    if st.button("UConn Stuff Block TR"):
+        log_play_to_set(("UConn Stuff Block TR", "+"))
+    if st.button(f"{st.session_state.opp} Hitting Error TR"):
+        log_play_to_set((f"{st.session_state.opp} Hitting Error TR", "+"))
+    if st.button(f"{st.session_state.opp} Error TR (BHE, Net etc.)"):
+        log_play_to_set((f"{st.session_state.opp} Error TR (BHE, Net etc.)", "+"))
+
+
+    if st.button(f"{st.session_state.opp} TR Kill"):
+        log_play_to_set((f"{st.session_state.opp} TR Kill", "-"))
+    if st.button(f"{st.session_state.opp} Stuff Block TR"):
+        log_play_to_set((f"{st.session_state.opp} Stuff Block TR", "-"))
+    if st.button("UConn Hitting Error TR"):
+        log_play_to_set(("UConn Hitting Error TR", "-"))
+    if st.button("UConn Error TR (BHE, Net etc.)"):
+        log_play_to_set(("UConn Error TR (BHE, Net etc.)", "-"))
 
 with col4:
     st.subheader("Other Actions")
@@ -319,6 +495,9 @@ display_data()
 
 triangle_by_sets = triangle_by_set()
 st.dataframe(triangle_by_sets)
+
+triangle_pcts = triangle_percentage_by_set()
+st.dataframe(triangle_pcts)
 
 
 if st.button("End of game, export data to email"):
