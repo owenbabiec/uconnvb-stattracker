@@ -166,7 +166,7 @@ def export_to_excel():
         for i, set_data in st.session_state.sets.items():
             if set_data:
                 df = pd.DataFrame(set_data, columns=["Play Result", "Triangle +/-", "UConn", st.session_state.opp])
-                df.to_excel(writer, sheet_name=f"Set {i+1} Log", index=False)
+                df.to_excel(writer, sheet_name=f"Set {i} Log", index=False)
                 any_data_written = True
 
         if not any_data_written:
