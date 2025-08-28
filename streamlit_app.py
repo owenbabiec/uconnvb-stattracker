@@ -10,6 +10,7 @@ import numpy as np
 from util import send_email_with_attachment
 import os
 import openpyxl
+from io import BytesIO
 
 
 # Set a password for access
@@ -159,29 +160,21 @@ def export_to_excel():
     filename = f"data/UConn vs {st.session_state.opp} - {datetime.today().strftime('%Y-%m-%d')} Triangle Stats.xlsx"
 
     with pd.ExcelWriter(filename, engine='openpyxl') as writer:
+        any_data_written = False
+
         # add each set to excel
         for i, set_data in enumerate(st.session_state.sets):
-            df = pd.DataFrame(set_data, columns=["Play Result", "Triangle +/-", "UConn", st.session_state.opp])
-            df.to_excel(writer, sheet_name=f"Set {i+1} Log")
+            if set_data:
+                df = pd.DataFrame(set_data, columns=["Play Result", "Triangle +/-", "UConn", st.session_state.opp])
+                df.to_excel(writer, sheet_name=f"Set {i+1} Log")
+                any_data_written = True
 
-        # todo: change to one table for all of the set data (sets 1-5, plus total game)
-        for i, set_stats in enumerate(st.session_state.set_data):
-            df = pd.DataFrame(set_stats)
-            df.to_excel(writer, sheet_name=f"Set {i+1} Stats")
-
-        # adds triangle by set (+ overall triangle per game)
-        sets_by_triangle = triangle_by_set()
-        df = pd.DataFrame(sets_by_triangle)
-        df.to_excel(writer, sheet_name="Triangle Stats")
-
-        # adds triangle % by set (+ overall % triangle per game)
-        sets_by_triangle_pcts = triangle_percentage_by_set()
-        df = pd.DataFrame(sets_by_triangle_pcts)
-        df.to_excel(writer, sheet_name="Triangle Percentages")
-
-        overall_stats = overall_game_stats()
-        df = pd.DataFrame(overall_stats)
-        df.to_excel(writer, sheet_name="Overall Game Stats")
+        if not any_data_written:
+            pd.DataFrame({'Message': ["No data recorded"]}).to_excel(writer, sheet_name="Summary", index=False)
+        else:
+            triangle_by_set().to_excel(writer, sheet_name="Triangle Stats")
+            triangle_percentage_by_set().to_excel(writer, sheet_name="Triangle Percentages")
+            overall_game_stats().to_excel(writer, sheet_name="Overall Game Stats")        
 
     send_excel_emails(filename)
 
