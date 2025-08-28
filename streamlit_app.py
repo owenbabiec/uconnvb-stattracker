@@ -162,11 +162,11 @@ def export_to_excel():
     with pd.ExcelWriter(filename, engine='openpyxl') as writer:
         any_data_written = False
 
-        # add each set to excel
-        for i, set_data in enumerate(st.session_state.sets):
+        # add set logs
+        for i, set_data in st.session_state.sets.items:
             if set_data:
                 df = pd.DataFrame(set_data, columns=["Play Result", "Triangle +/-", "UConn", st.session_state.opp])
-                df.to_excel(writer, sheet_name=f"Set {i+1} Log")
+                df.to_excel(writer, sheet_name=f"Set {i+1} Log", index=False)
                 any_data_written = True
 
         if not any_data_written:
