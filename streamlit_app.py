@@ -183,7 +183,7 @@ def send_excel_emails(file):
         send_email_with_attachment(
                         sender_email='owenbabiec@gmail.com',
                         sender_password="wmxdajqjjexvopxh",
-                        recipient_email=['owen.babiec@uconn.edu'],
+                        recipients=['owen.babiec@uconn.edu'],
                         subject=f"UConn vs {st.session_state.opp} - {datetime.today().strftime('%Y-%m-%d')} Triangle Stats",
                         body=f"Here's the excel files for this game",
                         attachments=[file]
@@ -212,7 +212,6 @@ def display_triangle_stats(triangle_stats, overall_stats):
     st.dataframe(overall_df)
 
 def triangle_by_set():
-    st.subheader("Triangle Stats")
     triangle_stats = []
     for set_num in range(1, 6):
         stats = st.session_state.set_data[set_num]["stats"]
@@ -299,7 +298,6 @@ def overall_game_stats():
     return pd.DataFrame(triangle_stats)
 
 def triangle_percentage_by_set():
-    st.subheader("Triangle Percentages")
     triangle_stats = []
 
     for set_num in range(1, 6):
@@ -457,9 +455,11 @@ with col4:
 display_data()
 
 triangle_by_sets = triangle_by_set()
+st.subheader("Triangle Stats")
 st.dataframe(triangle_by_sets)
 
 triangle_pcts = triangle_percentage_by_set()
+st.subheader("Triangle Percentages")
 st.dataframe(triangle_pcts)
 
 
