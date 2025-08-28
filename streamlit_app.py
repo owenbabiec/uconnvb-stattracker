@@ -183,7 +183,7 @@ def send_excel_emails(file):
         send_email_with_attachment(
                         sender_email='owenbabiec@gmail.com',
                         sender_password="wmxdajqjjexvopxh",
-                        recipients=['owen.babiec@uconn.edu'],
+                        recipients=['owen.babiec@uconn.edu', 'peter.netisingha@uconn.edu', 'mdt23007@uconn.edu'],
                         subject=f"UConn vs {st.session_state.opp} - {datetime.today().strftime('%Y-%m-%d')} Triangle Stats",
                         body=f"Here's the excel files for this game",
                         attachments=[file]
