@@ -7,7 +7,6 @@ import streamlit as st
 import pandas as pd
 from datetime import datetime
 import numpy as np
-from io import BytesIO
 from util import send_email_with_attachment
 import os
 import openpyxl
