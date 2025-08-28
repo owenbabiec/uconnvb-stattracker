@@ -8,7 +8,7 @@ import pandas as pd
 from datetime import datetime
 import numpy as np
 from io import BytesIO
-from util import send_mail
+from util import send_email_with_attachment
 import os
 
 
@@ -36,12 +36,10 @@ def initiate_session():
                     "our_fb_kills": 0, "our_fb_stop": 0, "opp_fb_kills": 0, "opp_fb_stop": 0,
                     "our_fb_stuff": 0, "opp_fb_he": 0, "opp_fb_err": 0,
                     "opp_fb_stuff": 0, "our_fb_he": 0, "our_fb_err": 0,
-                    # "our_fb_blks": 0, "our_fb_ae": 0, "opp_fb_blks": 0, "opp_fb_ae": 0,
 
                     "our_trs_kills": 0, "our_trs_stop": 0, "opp_trs_kills": 0, "opp_trs_stop": 0,
                     "our_trs_stuff": 0, "opp_trs_he": 0, "opp_trs_err": 0,
                     "opp_trs_stuff": 0, "our_trs_he": 0, "our_trs_err": 0
-                    # "our_trs_blks": 0, "our_trs_ae": 0, "opp_trs_blks": 0, "opp_trs_ae": 0
                 }
             } for i in range(1, 6)
         }
@@ -164,7 +162,7 @@ def export_to_excel():
             df = pd.DataFrame(set_data, columns=["Play Result", "Triangle +/-", "UConn", st.session_state.opp])
             df.to_excel(writer, sheet_name=f"Set {i+1} Log")
 
-        # add better set information (blks, ae)
+        # todo: change to one table for all of the set data (sets 1-5, plus total game)
         for i, set_stats in enumerate(st.session_state.set_data):
             df = pd.DataFrame(set_stats)
             df.to_excel(writer, sheet_name=f"Set {i+1} Stats")
@@ -172,21 +170,32 @@ def export_to_excel():
         # adds triangle by set (+ overall triangle per game)
         sets_by_triangle = triangle_by_set()
         df = pd.DataFrame(sets_by_triangle)
-        df.toexcel(writer, sheet_name=f"Triangle Stats")
+        df.to_excel(writer, sheet_name="Triangle Stats")
+
+        # adds triangle % by set (+ overall % triangle per game)
+        sets_by_triangle_pcts = triangle_percentage_by_set()
+        df = pd.DataFrame(sets_by_triangle_pcts)
+        df.to_excel(writer, sheet_name="Triangle Percentages")
+
+        overall_stats = overall_game_stats()
+        df = pd.DataFrame(overall_stats)
+        df.to_excel(writer, sheet_name="Overall Game Stats")
 
     send_excel_emails(filename)
 
 def send_excel_emails(file):
     try:
-        send_mail(send_from='owen.babiec@uconn.edu',
-                        send_to=['owen.babiec@uconn.edu'],
+        send_email_with_attachment(
+                        sender_email='owenbabiec@gmail.com',
+                        sender_password="wmxdajqjjexvopxh",
+                        recipient_email=['owen.babiec@uconn.edu'],
                         subject=f"UConn vs {st.session_state.opp} - {datetime.today().strftime('%Y-%m-%d')} Triangle Stats",
-                        text=f"Here's the excel files for this game",
-                        files=[file]
+                        body=f"Here's the excel files for this game",
+                        attachments=[file]
                         )
         st.success("Emails sent successfully")
     except Exception as e:
-        st.write(f"Error sending email: {e}")
+        st.warning(f"Error sending email: {e}")
 
 def display_data():
     current_set = st.session_state.set
@@ -195,33 +204,6 @@ def display_data():
     df = pd.DataFrame(set_data, columns=["Play Result", "+/-", "UConn", st.session_state.opp])
     st.dataframe(df)
 
-
-def calculate_triangle_stats():
-    triangle_stats = {}
-    overall_stats = {
-        "Terminal Serve": 0,
-        "First Ball": 0,
-        "Transition": 0
-    }
-
-    for set_num in range(1, 6):
-        stats = st.session_state.set_data[set_num]["stats"]
-        terminal_serve = stats["our_ts_ace"] - stats["our_ts_err"] - stats["opp_ts_ace"] + stats["opp_ts_err"]
-        first_ball = stats["our_fb_kills"] + stats["our_fb_stop"] - stats["opp_fb_kills"] - stats["opp_fb_stop"]
-        transition = stats["our_trs_kills"] + stats["our_trs_stop"] - stats["opp_trs_kills"] - stats["opp_trs_stop"]
-
-        triangle_stats[set_num] = {
-            "Set #": set_num,
-            "Terminal Serve": terminal_serve,
-            "First Ball": first_ball,
-            "Transition": transition
-        }
-
-        overall_stats["Terminal Serve"] += terminal_serve
-        overall_stats["First Ball"] += first_ball
-        overall_stats["Transition"] += transition
-
-    return triangle_stats, overall_stats
 
 def display_triangle_stats(triangle_stats, overall_stats):
     current_set = st.session_state.set
@@ -260,7 +242,66 @@ def triangle_by_set():
 
     return pd.DataFrame(triangle_stats)
 
+def overall_game_stats():
+    triangle_stats = []
+    for set_num in range(1, 6):
+        stats = st.session_state.set_data[set_num]["stats"]
+        triangle_stats.append({
+            "Set #": set_num, 
+            "UConn Ace": stats["our_ts_ace"],
+            "UConn SE": stats["our_ts_err"],
+            f"{st.session_state.opp} Ace": stats["opp_ts_ace"],
+            f"{st.session_state.opp} SE": stats["opp_ts_err"],
 
+            "UConn FB Kill": stats["our_fb_kills"],
+            "UConn FB Stuff Block": stats["our_fb_stuff"],
+            "UConn FB Hitting Err": stats["our_fb_he"],
+            "UConn FB Error (BHE, Net etc)": stats["our_fb_err"],
+            f"{st.session_state.opp} FB Kill": stats["opp_fb_kills"],
+            f"{st.session_state.opp} FB Stuff Block": stats["opp_fb_stuff"],
+            f"{st.session_state.opp} FB Hitting Err": stats["opp_fb_he"],
+            f"{st.session_state.opp} FB Error (BHE, Net etc)": stats["opp_fb_err"],
+
+            "UConn TR Kill": stats["our_trs_kills"],
+            "UConn TR Stuff Block": stats["our_trs_stuff"],
+            "UConn TR Hitting Err": stats["our_trs_he"],
+            "UConn TR Error (BHE, Net etc)": stats["our_trs_err"],
+            f"{st.session_state.opp} TR Kill": stats["opp_trs_kills"],
+            f"{st.session_state.opp} TR Stuff Block": stats["opp_trs_stuff"],
+            f"{st.session_state.opp} TR Hitting Err": stats["opp_trs_he"],
+            f"{st.session_state.opp} TR Error (BHE, Net etc)": stats["opp_trs_err"]
+        })
+
+    overall_total = ({
+        "Set #": "Game Total", 
+        # sum(row["Terminal Serve"] for row in triangle_stats)
+        "UConn Ace": sum(row["UConn Ace"] for row in triangle_stats),
+        "UConn SE": sum(row["UConn SE"] for row in triangle_stats),
+        f"{st.session_state.opp} Ace": sum(row[f"{st.session_state.opp} Ace"] for row in triangle_stats),
+        f"{st.session_state.opp} SE": sum(row[f"{st.session_state.opp} SE"] for row in triangle_stats),
+
+        "UConn FB Kill": sum(row["UConn FB Kill"] for row in triangle_stats),
+        "UConn FB Stuff Block": sum(row["UConn FB Stuff Block"] for row in triangle_stats),
+        "UConn FB Hitting Err": sum(row["UConn FB Hitting Err"] for row in triangle_stats),
+        "UConn FB Error (BHE, Net etc)": sum(row["UConn FB Error (BHE, Net etc)"] for row in triangle_stats),
+        f"{st.session_state.opp} FB Kill": sum(row[f"{st.session_state.opp} FB Kill"] for row in triangle_stats),
+        f"{st.session_state.opp} FB Stuff Block": sum(row[f"{st.session_state.opp} FB Stuff Block"] for row in triangle_stats),
+        f"{st.session_state.opp} FB Hitting Err": sum(row[f"{st.session_state.opp} FB Hitting Err"] for row in triangle_stats),
+        f"{st.session_state.opp} FB Error (BHE, Net etc)": sum(row[f"{st.session_state.opp} FB Error (BHE, Net etc)"] for row in triangle_stats),
+
+        "UConn TR Kill": sum(row["UConn TR Kill"] for row in triangle_stats),
+        "UConn TR Stuff Block": sum(row["UConn TR Stuff Block"] for row in triangle_stats),
+        "UConn TR Hitting Err": sum(row["UConn TR Hitting Err"] for row in triangle_stats),
+        "UConn TR Error (BHE, Net etc)": sum(row["UConn TR Error (BHE, Net etc)"] for row in triangle_stats),
+        f"{st.session_state.opp} TR Kill": sum(row[f"{st.session_state.opp} TR Kill"] for row in triangle_stats),
+        f"{st.session_state.opp} TR Stuff Block": sum(row[f"{st.session_state.opp} TR Stuff Block"] for row in triangle_stats),
+        f"{st.session_state.opp} TR Hitting Err": sum(row[f"{st.session_state.opp} TR Hitting Err"] for row in triangle_stats),
+        f"{st.session_state.opp} TR Error (BHE, Net etc)": sum(row[f"{st.session_state.opp} TR Error (BHE, Net etc)"] for row in triangle_stats)
+    })
+
+    triangle_stats.append(overall_total)
+
+    return pd.DataFrame(triangle_stats)
 
 def triangle_percentage_by_set():
     st.subheader("Triangle Percentages")
@@ -490,8 +531,6 @@ with col4:
 
 # Displays set log, triangle per set and overall game triangle
 display_data()
-# curr_triangle, ovr_triangle = calculate_triangle_stats()
-# display_triangle_stats(curr_triangle, ovr_triangle)
 
 triangle_by_sets = triangle_by_set()
 st.dataframe(triangle_by_sets)
