@@ -163,7 +163,7 @@ def export_to_excel():
         any_data_written = False
 
         # add set logs
-        for i, set_data in st.session_state.sets.items:
+        for i, set_data in st.session_state.sets.items():
             if set_data:
                 df = pd.DataFrame(set_data, columns=["Play Result", "Triangle +/-", "UConn", st.session_state.opp])
                 df.to_excel(writer, sheet_name=f"Set {i+1} Log", index=False)
@@ -366,77 +366,6 @@ def triangle_percentage_by_set():
     triangle_stats.append(overall_total)
 
     return pd.DataFrame(triangle_stats)
-
-def triangle_percentage_by_set():
-    st.subheader("Triangle Percentages")
-    triangle_stats = []
-
-    for set_num in range(1, 6):
-        stats = st.session_state.set_data[set_num]["stats"]
-
-        # Calculate Serve %, FB %, TRS % for this set
-        serve_total = (stats["our_ts_ace"] + stats["our_ts_err"] +
-                       stats["opp_ts_ace"] + stats["opp_ts_err"])
-        serve_pct = ((stats["our_ts_ace"] + stats["opp_ts_err"]) / serve_total * 100
-                     if serve_total > 0 else 0)
-
-        fb_total = (stats["our_fb_kills"] + stats["our_fb_stop"] +
-                    stats["opp_fb_kills"] + stats["opp_fb_stop"])
-        fb_pct = ((stats["our_fb_kills"] + stats["our_fb_stop"]) / fb_total * 100
-                  if fb_total > 0 else 0)
-
-        trs_total = (stats["our_trs_kills"] + stats["our_trs_stop"] +
-                     stats["opp_trs_kills"] + stats["opp_trs_stop"])
-        trs_pct = ((stats["our_trs_kills"] + stats["our_trs_stop"]) / trs_total * 100
-                   if trs_total > 0 else 0)
-
-        triangle_stats.append({
-            "Set #": set_num,
-            "Serve %": round(serve_pct, 1),
-            "FB %": round(fb_pct, 1),
-            "TRS %": round(trs_pct, 1)
-        })
-
-    # Calculate Overall Totals
-    overall_our_ts_ace = sum(st.session_state.set_data[s]["stats"]["our_ts_ace"] for s in range(1, 6))
-    overall_our_ts_err = sum(st.session_state.set_data[s]["stats"]["our_ts_err"] for s in range(1, 6))
-    overall_opp_ts_ace = sum(st.session_state.set_data[s]["stats"]["opp_ts_ace"] for s in range(1, 6))
-    overall_opp_ts_err = sum(st.session_state.set_data[s]["stats"]["opp_ts_err"] for s in range(1, 6))
-
-    overall_our_fb_kills = sum(st.session_state.set_data[s]["stats"]["our_fb_kills"] for s in range(1, 6))
-    overall_our_fb_stop = sum(st.session_state.set_data[s]["stats"]["our_fb_stop"] for s in range(1, 6))
-    overall_opp_fb_kills = sum(st.session_state.set_data[s]["stats"]["opp_fb_kills"] for s in range(1, 6))
-    overall_opp_fb_stop = sum(st.session_state.set_data[s]["stats"]["opp_fb_stop"] for s in range(1, 6))
-
-    overall_our_trs_kills = sum(st.session_state.set_data[s]["stats"]["our_trs_kills"] for s in range(1, 6))
-    overall_our_trs_stop = sum(st.session_state.set_data[s]["stats"]["our_trs_stop"] for s in range(1, 6))
-    overall_opp_trs_kills = sum(st.session_state.set_data[s]["stats"]["opp_trs_kills"] for s in range(1, 6))
-    overall_opp_trs_stop = sum(st.session_state.set_data[s]["stats"]["opp_trs_stop"] for s in range(1, 6))
-
-    # Overall percentages
-    overall_serve_total = overall_our_ts_ace + overall_our_ts_err + overall_opp_ts_ace + overall_opp_ts_err
-    overall_fb_total = overall_our_fb_kills + overall_our_fb_stop + overall_opp_fb_kills + overall_opp_fb_stop
-    overall_trs_total = overall_our_trs_kills + overall_our_trs_stop + overall_opp_trs_kills + overall_opp_trs_stop
-
-    overall_serve_pct = ((overall_our_ts_ace + overall_opp_ts_err) / overall_serve_total * 100
-                         if overall_serve_total > 0 else 0)
-    overall_fb_pct = ((overall_our_fb_kills + overall_our_fb_stop) / overall_fb_total * 100
-                      if overall_fb_total > 0 else 0)
-    overall_trs_pct = ((overall_our_trs_kills + overall_our_trs_stop) / overall_trs_total * 100
-                       if overall_trs_total > 0 else 0)
-
-    overall_total = {
-        "Set #": "Game",
-        "Serve %": round(overall_serve_pct, 1),
-        "FB %": round(overall_fb_pct, 1),
-        "TRS %": round(overall_trs_pct, 1)
-    }
-
-    triangle_stats.append(overall_total)
-
-    return pd.DataFrame(triangle_stats)
-
-    
 
 
 # Password prompt
