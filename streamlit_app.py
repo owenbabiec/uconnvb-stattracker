@@ -154,6 +154,8 @@ def log_play_to_set(play):
 
 def export_to_excel():
     # When end of game button is clicked, saves all data and sends it out as an excel file
+    os.makedirs("data", exist_ok=True)
+
     filename = f"data/UConn vs {st.session_state.opp} - {datetime.today().strftime('%Y-%m-%d')} Triangle Stats.xlsx"
 
     with pd.ExcelWriter(filename, engine='openpyxl') as writer:
