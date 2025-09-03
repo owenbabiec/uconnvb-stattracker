@@ -393,7 +393,7 @@ with col1:
     st.subheader("Terminal Serve")
     if st.button("UConn Ace", type="primary"):
         log_play_to_set(("UConn Ace", "+"))
-    if st.button("UConn SE"):
+    if st.button("UConn SE", type="primary"):
         log_play_to_set(("UConn SE", "-"))
     if st.button(f"{st.session_state.opp} Ace"):
         log_play_to_set((f"{st.session_state.opp} Ace", "-"))
@@ -402,13 +402,13 @@ with col1:
 
 with col2:
     st.subheader("First Ball")
-    if st.button("UConn FB Kill"):
+    if st.button("UConn FB Kill", type="primary"):
         log_play_to_set(("UConn FB Kill", "+"))
-    if st.button("UConn Stuff Block FB"):
+    if st.button("UConn Stuff Block FB", type="primary"):
         log_play_to_set(("UConn Stuff Block FB", "+"))
-    if st.button("UConn Hitting Error FB"):
+    if st.button("UConn Hitting Error FB", type="primary"):
         log_play_to_set(("UConn Hitting Error FB", "-"))
-    if st.button("UConn Error FB (BHE, Net etc.)"):
+    if st.button("UConn Error FB (BHE, Net etc.)", type="primary"):
         log_play_to_set(("UConn Error FB (BHE, Net etc.)", "-"))
     if st.button(f"{st.session_state.opp} FB Kill"):
         log_play_to_set((f"{st.session_state.opp} FB Kill", "-"))
@@ -422,13 +422,13 @@ with col2:
 
 with col3:
     st.subheader("Transition")
-    if st.button("UConn TR Kill"):
+    if st.button("UConn TR Kill", type="primary"):
         log_play_to_set(("UConn TR Kill", "+"))
-    if st.button("UConn Stuff Block TR"):
+    if st.button("UConn Stuff Block TR", type="primary"):
         log_play_to_set(("UConn Stuff Block TR", "+"))
-    if st.button("UConn Hitting Error TR"):
+    if st.button("UConn Hitting Error TR", type="primary"):
         log_play_to_set(("UConn Hitting Error TR", "-"))
-    if st.button("UConn Error TR (BHE, Net etc.)"):
+    if st.button("UConn Error TR (BHE, Net etc.)", type="primary"):
         log_play_to_set(("UConn Error TR (BHE, Net etc.)", "-"))
     if st.button(f"{st.session_state.opp} TR Kill"):
         log_play_to_set((f"{st.session_state.opp} TR Kill", "-"))
