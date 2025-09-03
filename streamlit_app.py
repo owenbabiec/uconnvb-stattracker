@@ -391,7 +391,7 @@ col1, col2, col3, col4 = st.columns(4)
 
 with col1:
     st.subheader("Terminal Serve")
-    if st.button("UConn Ace"):
+    if st.button("UConn Ace", type="primary"):
         log_play_to_set(("UConn Ace", "+"))
     if st.button("UConn SE"):
         log_play_to_set(("UConn SE", "-"))
