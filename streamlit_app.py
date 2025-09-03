@@ -442,7 +442,7 @@ with col3:
 
 with col4:
     st.subheader("Other Actions")
-    if st.button("Award Point to UConn"):
+    if st.button("Award Point to UConn", type="primary"):
         log_play_to_set((f"Award Point to UConn", "+"))
     if st.button(f"Award Point to {st.session_state.opp}"):
         log_play_to_set((f"Award Point to {st.session_state.opp}", "-"))
