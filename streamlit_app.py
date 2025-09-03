@@ -406,19 +406,19 @@ with col2:
         log_play_to_set(("UConn FB Kill", "+"))
     if st.button("UConn Stuff Block FB"):
         log_play_to_set(("UConn Stuff Block FB", "+"))
+    if st.button("UConn Hitting Error FB"):
+        log_play_to_set(("UConn Hitting Error FB", "-"))
+    if st.button("UConn Error FB (BHE, Net etc.)"):
+        log_play_to_set(("UConn Error FB (BHE, Net etc.)", "-"))
+    if st.button(f"{st.session_state.opp} FB Kill"):
+        log_play_to_set((f"{st.session_state.opp} FB Kill", "-"))
+    if st.button(f"{st.session_state.opp} Stuff Block FB"):
+        log_play_to_set((f"{st.session_state.opp} Stuff Block FB", "-"))
     if st.button(f"{st.session_state.opp} Hitting Error FB"):
         log_play_to_set((f"{st.session_state.opp} Hitting Error FB", "+"))
     if st.button(f"{st.session_state.opp} Error FB (BHE, Net etc.)"):
         log_play_to_set((f"{st.session_state.opp} Error FB (BHE, Net etc.)", "+"))
     
-    if st.button(f"{st.session_state.opp} FB Kill"):
-        log_play_to_set((f"{st.session_state.opp} FB Kill", "-"))
-    if st.button(f"{st.session_state.opp} Stuff Block FB"):
-        log_play_to_set((f"{st.session_state.opp} Stuff Block FB", "-"))
-    if st.button("UConn Hitting Error FB"):
-        log_play_to_set(("UConn Hitting Error FB", "-"))
-    if st.button("UConn Error FB (BHE, Net etc.)"):
-        log_play_to_set(("UConn Error FB (BHE, Net etc.)", "-"))
 
 with col3:
     st.subheader("Transition")
@@ -426,20 +426,19 @@ with col3:
         log_play_to_set(("UConn TR Kill", "+"))
     if st.button("UConn Stuff Block TR"):
         log_play_to_set(("UConn Stuff Block TR", "+"))
-    if st.button(f"{st.session_state.opp} Hitting Error TR"):
-        log_play_to_set((f"{st.session_state.opp} Hitting Error TR", "+"))
-    if st.button(f"{st.session_state.opp} Error TR (BHE, Net etc.)"):
-        log_play_to_set((f"{st.session_state.opp} Error TR (BHE, Net etc.)", "+"))
-
-
-    if st.button(f"{st.session_state.opp} TR Kill"):
-        log_play_to_set((f"{st.session_state.opp} TR Kill", "-"))
-    if st.button(f"{st.session_state.opp} Stuff Block TR"):
-        log_play_to_set((f"{st.session_state.opp} Stuff Block TR", "-"))
     if st.button("UConn Hitting Error TR"):
         log_play_to_set(("UConn Hitting Error TR", "-"))
     if st.button("UConn Error TR (BHE, Net etc.)"):
         log_play_to_set(("UConn Error TR (BHE, Net etc.)", "-"))
+    if st.button(f"{st.session_state.opp} TR Kill"):
+        log_play_to_set((f"{st.session_state.opp} TR Kill", "-"))
+    if st.button(f"{st.session_state.opp} Stuff Block TR"):
+        log_play_to_set((f"{st.session_state.opp} Stuff Block TR", "-"))
+    if st.button(f"{st.session_state.opp} Hitting Error TR"):
+        log_play_to_set((f"{st.session_state.opp} Hitting Error TR", "+"))
+    if st.button(f"{st.session_state.opp} Error TR (BHE, Net etc.)"):
+        log_play_to_set((f"{st.session_state.opp} Error TR (BHE, Net etc.)", "+"))
+    
 
 with col4:
     st.subheader("Other Actions")
