@@ -44,6 +44,8 @@ def initiate_session():
                 }
             } for i in range(1, 6)
         }
+    if "game_date" not in st.session_state:
+        st.session_state.game_date = datetime.today()
 
 
 
@@ -157,7 +159,7 @@ def export_to_excel():
     # When end of game button is clicked, saves all data and sends it out as an excel file
     os.makedirs("data", exist_ok=True)
 
-    filename = f"data/UConn vs {st.session_state.opp} - {datetime.today().strftime('%Y-%m-%d')} Triangle Stats.xlsx"
+    filename = f"data/UConn vs {st.session_state.opp} - {st.session_state.game_date} Triangle Stats.xlsx"
 
     with pd.ExcelWriter(filename, engine='openpyxl') as writer:
         any_data_written = False
@@ -184,7 +186,7 @@ def send_excel_emails(file):
                         sender_email='owenbabiec@gmail.com',
                         sender_password="wmxdajqjjexvopxh",
                         recipients=['owen.babiec@uconn.edu', 'peter.netisingha@uconn.edu', 'mdt23007@uconn.edu'],
-                        subject=f"UConn vs {st.session_state.opp} - {datetime.today().strftime('%Y-%m-%d')} Triangle Stats",
+                        subject=f"UConn vs {st.session_state.opp} - {st.session_state.game_date} Triangle Stats",
                         body=f"Here's the excel files for this game",
                         attachments=[file]
                         )
